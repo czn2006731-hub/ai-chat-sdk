@@ -1,0 +1,45 @@
+# ---------- 构建产物 ----------
+build/
+*/build/
+**/build/
+cmake-build-*/
+out/
+
+# ---------- 编译生成物 ----------
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.so.*
+*.dylib
+*.exe
+*.out
+*.bin
+
+# ---------- 运行时数据（本地测试数据库 / 日志 / 配置）----------
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.log
+logs/
+ChatServer.conf
+
+# ---------- IDE / 编辑器 ----------
+.vs/
+.idea/
+*.swp
+*.swo
+*~
+
+# ---------- 系统文件 ----------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------- 本地密钥与证书 ----------
+.env
+*.pem
+*.key
+*.crt

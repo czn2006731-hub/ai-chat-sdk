@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4efe4" />
+    <title>AI Chat · 编辑体对话</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- 非阻塞加载：字体拿不到时自动回落到本地衬线字体，不拖慢首屏 -->
+    <link
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..600&family=JetBrains+Mono:wght@400;500&display=optional"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#conversation">跳到对话内容</a>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="scrim" id="scrim" aria-hidden="true"></div>
+
+    <div class="app-shell">
+      <!-- ── 会话索引栏 ───────────────────────────────── -->
+      <aside class="sidebar" id="sidebar" aria-label="会话索引">
+        <header class="masthead">
+          <span class="mark" aria-hidden="true">
+            <img class="mark-img" src="./assets/whale-girl.png" alt="" width="56" height="58" decoding="async" />
+          </span>
+          <span class="masthead-text">
+            <span class="brand">AI Chat</span>
+            <span class="brand-sub">服务端会话 · 本地库</span>
+          </span>
+          <button class="icon-button sidebar-close" id="close-sidebar" type="button" aria-label="关闭会话索引">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          </button>
+        </header>
+
+        <button class="new-chat" id="new-chat" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+          <span>新建对话</span>
+        </button>
+
+        <div class="index-head">
+          <span>会话索引</span>
+          <span class="index-count" id="session-count">0</span>
+        </div>
+
+        <nav class="session-list" id="session-list" aria-label="历史会话"></nav>
+
+        <footer class="sidebar-foot">
+          <span class="foot-meta">
+            <span class="foot-key">存储</span>
+            <span class="foot-val">chatDB.db</span>
+          </span>
+        </footer>
+      </aside>
+
+      <!-- ── 主栏 ─────────────────────────────────────── -->
+      <main class="main-panel">
+        <header class="topbar">
+          <button class="icon-button menu-button" id="open-sidebar" type="button" aria-label="打开会话索引">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+          </button>
+          <div class="model-block">
+            <span class="kicker">当前模型</span>
+            <strong id="active-model">选择模型后开始聊天</strong>
+          </div>
+          <div class="topbar-tools">
+            <span class="status" id="connection-status" role="status">
+              <i></i><span id="connection-text">正在连接</span>
+            </span>
+            <button class="icon-button" id="theme-toggle" type="button" aria-label="切换夜间版" title="切换夜间版">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="4.2" />
+                <path d="M12 2.6v2.6M12 18.8v2.6M2.6 12h2.6M18.8 12h2.6M5.4 5.4l1.8 1.8M16.8 16.8l1.8 1.8M5.4 18.6l1.8-1.8M16.8 7.2l1.8-1.8" />
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <section class="conversation" id="conversation" aria-live="polite" aria-busy="false">
+          <div class="welcome" id="welcome-state">
+            <p class="kicker">AI CHAT SERVER · 卷首</p>
+            <h1>从一个<br />好问题开始</h1>
+            <p class="welcome-copy">
+              选择模型并创建一段对话。你的每一句话都会写进服务端的本地数据库，刷新页面也不会丢失。
+            </p>
+            <button class="text-button" id="welcome-new-chat" type="button">
+              创建新对话
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" /></svg>
+            </button>
+          </div>
+          <p class="empty-hint" id="empty-hint" hidden>
+            <span class="kicker">空白页</span>
+            在下方写下第一句话，开始这段对话。
+          </p>
+          <div class="messages" id="message-list" hidden></div>
+        </section>
+
+        <div class="composer-dock">
+          <p class="status-line" id="request-status" role="status" aria-live="polite"></p>
+          <form class="composer" id="composer">
+            <label class="sr-only" for="message-input">输入消息</label>
+            <textarea id="message-input" rows="1" placeholder="在这里写下你的问题…" disabled></textarea>
+            <div class="composer-foot">
+              <span class="hint">Enter 发送 · Shift + Enter 换行</span>
+              <button class="send" id="send-button" type="submit" disabled aria-label="发送消息" title="发送消息">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m20 4-9 16-2.6-7.4L1 10 20 4Z" /><path d="m8.4 12.6 11.6-8.6" /></svg>
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </div>
+
+    <!-- ── 新建对话：选模型 ───────────────────────────── -->
+    <dialog class="modal" id="model-dialog" aria-labelledby="model-dialog-title">
+      <form method="dialog" class="modal-card" id="new-session-form">
+        <header class="modal-head">
+          <div>
+            <p class="kicker">新对话</p>
+            <h2 id="model-dialog-title">选择一个模型</h2>
+          </div>
+          <button class="icon-button" value="cancel" type="submit" aria-label="关闭">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          </button>
+        </header>
+        <p class="modal-copy">
+          模型决定这段对话使用的推理服务。会话创建后不能中途更换模型。
+        </p>
+        <fieldset id="model-options" class="model-options">
+          <legend class="sr-only">可用模型</legend>
+        </fieldset>
+        <p class="inline-error" id="model-error" role="alert"></p>
+        <div class="modal-actions">
+          <button class="ghost-button" value="cancel" type="submit">取消</button>
+          <button class="solid-button" id="create-session" value="default" type="submit">开始对话</button>
+        </div>
+      </form>
+    </dialog>
+
+    <!-- ── 删除确认 ──────────────────────────────────── -->
+    <dialog class="modal" id="delete-dialog" aria-labelledby="delete-dialog-title">
+      <form method="dialog" class="modal-card modal-card--compact" id="delete-session-form">
+        <header class="modal-head">
+          <div>
+            <p class="kicker kicker--danger">删除</p>
+            <h2 id="delete-dialog-title">确认删除这段对话？</h2>
+          </div>
+        </header>
+        <p class="modal-copy">会话与其中的全部消息会从数据库移除，无法恢复。</p>
+        <div class="modal-actions">
+          <button class="ghost-button" value="cancel" type="submit">取消</button>
+          <button class="solid-button solid-button--danger" id="confirm-delete" value="default" type="submit">
+            删除对话
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
