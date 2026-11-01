@@ -154,6 +154,14 @@ cd test && ./build/AIChatServerTest
 - [ ] 会话标题自动摘要
 - [ ] Docker 镜像与 `docker-compose.yml`
 - [ ] 用 `find_package` + `FetchContent` 彻底替代对 `/usr/local/lib` 的硬编码依赖
+## 效果展示
+<img width="1273" height="683" alt="屏幕截图 2026-11-01 155704" src="https://github.com/user-attachments/assets/9553c9b5-fd06-4773-a1af-ed3e5fd50d60" />
+
+<img width="1276" height="686" alt="屏幕截图 2026-11-01 155710" src="https://github.com/user-attachments/assets/0f3453e5-f42c-4959-859e-c1afa67a3020" />
+<img width="1268" height="683" alt="屏幕截图 2026-11-01 155720" src="https://github.com/user-attachments/assets/55c41471-d722-4905-9d4e-31b989c4b288" />
+
+
+<img width="1265" height="673" alt="屏幕截图 2026-11-01 155844" src="https://github.com/user-attachments/assets/064e3e35-aebc-45e5-9d99-d63972382bbd" />
 
 ## 🤝 参与贡献
 
